@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FoodHub - Delicious Food Delivered</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #a8e6cf 0%, #dcedc8 25%, #ffffff 50%, #c8e6c9 75%, #81c784 100%);
+      min-height: 100vh;
+      color: #2e4a38;
+    }
+
+    header {
+      background: linear-gradient(135deg, #4caf50, #2e7d32);
+      padding: 2rem 1rem;
+      text-align: center;
+      color: white;
+      box-shadow: 0 4px 20px rgba(76, 175, 80, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+      animation: float 20s infinite linear;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      100% { transform: translateY(-100px); }
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      position: relative;
+      z-index: 1;
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      position: relative;
+      z-index: 1;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
+    section {
+      margin-bottom: 3rem;
+    }
+
+    h2 {
+      font-size: 2.5rem;
+      text-align: center;
+      margin-bottom: 2rem;
+      color: #2e7d32;
+      text-shadow: 1px 1px 2px rgba(46, 125, 50, 0.1);
+    }
+
+    .search-container {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .search-box {
+      padding: 1rem 1.5rem;
+      font-size: 1.1rem;
+      border: 2px solid #4caf50;
+      border-radius: 50px;
+      width: 300px;
+      max-width: 80%;
+      outline: none;
+      transition: all 0.3s ease;
+      background: white;
+    }
+
+    .search-box:focus {
+      border-color: #2e7d32;
+      box-shadow: 0 0 15px rgba(76, 175, 80, 0.3);
+      transform: scale(1.02);
+    }
+
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+      padding: 1rem 0;
+    }
+
+    .card {
+      background: linear-gradient(145deg, #ffffff, #f8fff8);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 
+        0 8px 32px rgba(76, 175, 80, 0.15),
+        0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(76, 175, 80, 0.1);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #4caf50, #81c784, #4caf50);
+    }
+
+    .card:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 
+        0 20px 40px rgba(76, 175, 80, 0.25),
+        0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .card h3, .card h4 {
+      color: #2e7d32;
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+      position: relative;
+    }
+
+    .card p {
+      color: #4a6741;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+
+    .card .address {
+      color: #666;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .card .address::before {
+      content: "📍";
+      margin-right: 0.5rem;
+    }
+
+    .card .price {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #2e7d32;
+      background: rgba(76, 175, 80, 0.1);
+      padding: 0.5rem 1rem;
+      border-radius: 25px;
+      display: inline-block;
+      margin: 0.5rem 0;
+    }
+
+    .card button {
+      background: linear-gradient(135deg, #4caf50, #45a049);
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 50px;
+      color: white;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      margin-top: 1rem;
+    }
+
+    .card button::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      transform: translate(-50%, -50%);
+    }
+
+    .card button:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .card button:hover {
+      background: linear-gradient(135deg, #45a049, #3d8b40);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+    }
+
+    .back-button {
+      background: linear-gradient(135deg, #66bb6a, #4caf50);
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 50px;
+      color: white;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 2rem;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .back-button:hover {
+      background: linear-gradient(135deg, #4caf50, #45a049);
+      transform: translateX(-5px);
+    }
+
+    .back-button::before {
+      content: "←";
+      font-size: 1.2rem;
+    }
+
+    .menu-header {
+      text-align: center;
+      background: linear-gradient(135deg, #e8f5e8, #f1f8e9);
+      padding: 2rem;
+      border-radius: 20px;
+      margin-bottom: 2rem;
+      border: 2px solid rgba(76, 175, 80, 0.2);
+    }
+
+    .menu-header h3 {
+      font-size: 2rem;
+      color: #2e7d32;
+      margin-bottom: 0.5rem;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      color: #4caf50;
+      font-size: 1.2rem;
+    }
+
+    .loading::after {
+      content: "";
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(76, 175, 80, 0.3);
+      border-radius: 50%;
+      border-top-color: #4caf50;
+      animation: spin 1s ease-in-out infinite;
+      margin-left: 10px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .error {
+      background: #ffebee;
+      color: #c62828;
+      padding: 1rem;
+      border-radius: 10px;
+      text-align: center;
+      border: 1px solid #ffcdd2;
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .card-container {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      
+      .card {
+        padding: 1.5rem;
+      }
+      
+      .search-box {
+        width: 90%;
+      }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.6s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .cart-summary {
+      background: linear-gradient(135deg, #e8f5e8, #f1f8e9);
+      padding: 2rem;
+      border-radius: 20px;
+      margin: 2rem 0;
+      text-align: center;
+      border: 2px solid rgba(76, 175, 80, 0.3);
+      position: sticky;
+      bottom: 2rem;
+    }
+
+    .cart-summary h3 {
+      color: #2e7d32;
+      margin-bottom: 1rem;
+    }
+
+    .cart-summary .total {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #1b5e20;
+      margin: 1rem 0;
+    }
+
+    .checkout-btn {
+      background: linear-gradient(135deg, #43a047, #2e7d32);
+      border: none;
+      padding: 1.5rem 3rem;
+      border-radius: 50px;
+      color: white;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin: 1rem;
+    }
+
+    .checkout-btn:hover {
+      background: linear-gradient(135deg, #388e3c, #1b5e20);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(67, 160, 71, 0.4);
+    }
+
+    .cart-icon {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      background: linear-gradient(135deg, #4caf50, #43a047);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      z-index: 1000;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(76, 175, 80, 0.3);
+    }
+
+    .cart-icon:hover {
+      transform: scale(1.1);
+      box-shadow: 0 8px 30px rgba(76, 175, 80, 0.5);
+    }
+
+    .cart-badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: #f44336;
+      color: white;
+      border-radius: 50%;
+      width: 25px;
+      height: 25px;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .quantity-btn {
+      background: #4caf50;
+      border: none;
+      color: white;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .quantity-btn:hover {
+      background: #45a049;
+      transform: scale(1.1);
+    }
+
+    .quantity-display {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #2e7d32;
+      min-width: 30px;
+      text-align: center;
+    }
+
+    .remove-btn {
+      background: linear-gradient(135deg, #e57373, #f44336);
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 25px;
+      color: white;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+    }
+
+    .remove-btn:hover {
+      background: linear-gradient(135deg, #f44336, #d32f2f);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🍽️ FoodHub</h1>
+    <p class="subtitle">Delicious food delivered to your doorstep</p>
+  </header>
+
+  <!-- Floating Cart Icon -->
+  <button class="cart-icon" onclick="showCart()">
+    🛒
+    <span class="cart-badge" id="cart-badge" style="display: none;">0</span>
+  </button>
+
+  <main>
+    <section id="restaurant-section">
+      <h2>Choose Your Restaurant</h2>
+      <div class="search-container">
+        <input type="text" class="search-box" id="restaurant-search" placeholder="Search restaurants..." onkeyup="filterRestaurants()">
+      </div>
+      <div id="restaurants-list" class="card-container"></div>
+    </section>
+
+    <section id="menu-section" style="display: none;">
+      <button class="back-button" onclick="showRestaurants()">Back to Restaurants</button>
+      <div id="menu-header" class="menu-header"></div>
+      <div id="menu-list" class="card-container"></div>
+    </section>
+
+    <section id="cart-section" style="display: none;">
+      <button class="back-button" onclick="showRestaurants()">Back to Restaurants</button>
+      <div class="menu-header">
+        <h3>🛒 Your Cart</h3>
+        <p>Review your delicious selections</p>
+      </div>
+      <div id="cart-items" class="card-container"></div>
+      <div id="cart-summary" class="cart-summary"></div>
+    </section>
+  </main>
+
+  <script>
+    let allRestaurants = [];
+
+    // Fetch and display restaurants
+    async function loadRestaurants() {
+      try {
+        document.getElementById("restaurants-list").innerHTML = '<div class="loading">Loading delicious restaurants...</div>';
+        
+        const res = await fetch("http://127.0.0.1:5000/restaurants");
+        if (!res.ok) throw new Error('Failed to fetch restaurants');
+        
+        const data = await res.json();
+        allRestaurants = data;
+        displayRestaurants(data);
+      } catch (err) {
+        console.error("Error loading restaurants:", err);
+        document.getElementById("restaurants-list").innerHTML = 
+          '<div class="error">Sorry! Unable to load restaurants. Please check if the server is running.</div>';
+      }
+    }
+
+    function displayRestaurants(restaurants) {
+      const container = document.getElementById("restaurants-list");
+      container.innerHTML = "";
+
+      if (restaurants.length === 0) {
+        container.innerHTML = '<div class="error">No restaurants found matching your search.</div>';
+        return;
+      }
+
+      restaurants.forEach((r, index) => {
+        const card = document.createElement("div");
+        card.className = "card fade-in";
+        card.style.animationDelay = `${index * 0.1}s`;
+        card.innerHTML = `
+          <h3>${r.name}</h3>
+          <p class="address">${r.address}</p>
+          <p>${r.description || "Delicious food awaits you!"}</p>
+          <button onclick="loadMenu(${r.id}, '${r.name.replace(/'/g, "\\'")}')">
+            View Menu & Order
+          </button>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function filterRestaurants() {
+      const searchTerm = document.getElementById("restaurant-search").value.toLowerCase();
+      const filtered = allRestaurants.filter(restaurant =>
+        restaurant.name.toLowerCase().includes(searchTerm) ||
+        restaurant.address.toLowerCase().includes(searchTerm) ||
+        (restaurant.description && restaurant.description.toLowerCase().includes(searchTerm))
+      );
+      displayRestaurants(filtered);
+    }
+
+    // Fetch and display menu for selected restaurant
+    async function loadMenu(restaurantId, restaurantName) {
+      try {
+        // Hide restaurant section and show menu section
+        document.getElementById("restaurant-section").style.display = "none";
+        document.getElementById("menu-section").style.display = "block";
+        
+        // Show loading state
+        document.getElementById("menu-list").innerHTML = '<div class="loading">Loading delicious menu items...</div>';
+        document.getElementById("menu-header").innerHTML = `
+          <h3>🍽️ ${restaurantName}</h3>
+          <p>Explore our delicious menu items</p>
+        `;
+
+        const res = await fetch(`http://127.0.0.1:5000/restaurants/${restaurantId}/menu`);
+        if (!res.ok) throw new Error('Failed to fetch menu');
+        
+        const data = await res.json();
+        const container = document.getElementById("menu-list");
+        container.innerHTML = "";
+
+        if (data.length === 0) {
+          container.innerHTML = '<div class="error">No menu items available for this restaurant.</div>';
+          return;
+        }
+
+        data.forEach((m, index) => {
+          const card = document.createElement("div");
+          card.className = "card fade-in";
+          card.style.animationDelay = `${index * 0.1}s`;
+          card.innerHTML = `
+            <h4>${m.name}</h4>
+            <p>${m.description}</p>
+            <div class="price">${m.price.toFixed(2)}</div>
+            <button onclick="addToCart(${restaurantId}, ${m.id}, '${m.name.replace(/'/g, "\\'")}', ${m.price})">
+              Add to Cart
+            </button>
+          `;
+          container.appendChild(card);
+        });
+      } catch (err) {
+        console.error("Error loading menu:", err);
+        document.getElementById("menu-list").innerHTML = 
+          '<div class="error">Sorry! Unable to load menu. Please try again.</div>';
+      }
+    }
+
+    function showRestaurants() {
+      document.getElementById("menu-section").style.display = "none";
+      document.getElementById("restaurant-section").style.display = "block";
+    }
+
+    function addToOrder(itemName, price) {
+      // This is a placeholder - you can implement cart functionality here
+      alert(`Added "${itemName}" ($${price.toFixed(2)}) to your order!\n\n(Cart functionality can be implemented here)`);
+    }
+
+    // Load restaurants on page load
+    window.onload = loadRestaurants;
+  </script>
+</body>
+</html>
